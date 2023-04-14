@@ -1,0 +1,8 @@
+# ninja log v5
+11	414	7030786599418496	CMakeFiles/JakDoajde.dir/MyVector.cpp.obj	dbb2d91c7bc38ed8
+4	451	7030791911860110	CMakeFiles/JakDoajde.dir/main.cpp.obj	fa369f98614aee55
+452	563	7030791912925093	JakDoajde.exe	8f29620b8b771749
+1	122	7030836656136655	build.ninja	332035095a74cddc
+10	435	7030837571540354	CMakeFiles/JakDoajde.dir/MyString.cpp.obj	c507a0594030cf67
+3	436	7030837571560632	CMakeFiles/JakDoajde.dir/main.cpp.obj	fa369f98614aee55
+437	560	7030837572746515	JakDoajde.exe	ae68613cbcf578
