@@ -172,10 +172,11 @@ MyString& MyString::operator+=(char c) {
         this->str = newString;
         return *this;
     }
-    char* newString = new char[this->length() + 2];
+    int len = this->length();
+    char* newString = new char[len + 2];
     stringCopy(newString, this->str);
-    newString[this->length()] = c;
-    newString[this->length() + 1] = '\0';
+    newString[len] = c;
+    newString[len + 1] = '\0';
     delete[] this->str;
     this->str = newString;
     return *this;
