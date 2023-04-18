@@ -4,47 +4,26 @@
 #include "AdjacencyList.h"
 
 
-MyString findCityName(const char** arr, int height, int width, int i, int j){
-    MyString name ="";
+MyString checkTop(const char** arr, int height, int width, int i, int j){
+    MyString name = "";
 
-    //bottom
-    if(i+1 < height && arr[i+1][j] != '.' && arr[i+1][j] != '#'){
-        if(j> 0 && (arr[i+1][j-1] == '.' || arr[i+1][j-1] == '#')){
-            while(j < width && arr[i+1][j] != '#' && arr[i+1][j] != '.'){
-                name += arr[i+1][j];
-                j++;
-            }
-        }
-        else if(j==0){
-            while(j < width && arr[i+1][j] != '#' && arr[i+1][j] != '.'){
-                name += arr[i+1][j];
-                j++;
-            }
-        }
-        else{
-            while(arr[i+1][j] != '#' && arr[i+1][j] != '.'){
-                name += arr[i+1][j];
-                j--;
-            }
-            name.reverse();
-        }
-    }
-
-    //top
-    else if(i-1 >= 0 && arr[i-1][j] != '.' && arr[i-1][j] != '#'){
+    if(i-1 >= 0 && arr[i-1][j] != '.' && arr[i-1][j] != '#'){
         if(j> 0 && arr[i-1][j-1] == '.' || arr[i-1][j-1] == '#'){
-            while(j < width &&arr[i-1][j] != '#' && arr[i-1][j] != '.'){
-                name += arr[i-1][j];
-                j++;
-            }
+            if(j<width && MyString::isLetter(arr[i-1][j+1])) return "";
+                while(j < width &&arr[i-1][j] != '#' && arr[i-1][j] != '.'){
+                    name += arr[i-1][j];
+                    j++;
+                }
         }
         else if(j==0){
+            if(j<width && MyString::isLetter(arr[i-1][j+1])) return "";
             while(j < width &&arr[i-1][j] != '#' && arr[i-1][j] != '.'){
                 name += arr[i-1][j];
                 j++;
             }
         }
         else{
+            if(j<width && MyString::isLetter(arr[i-1][j+1])) return "";
             while(arr[i-1][j] != '#' && arr[i-1][j] != '.'){
                 name += arr[i-1][j];
                 j--;
@@ -52,9 +31,82 @@ MyString findCityName(const char** arr, int height, int width, int i, int j){
             name.reverse();
         }
     }
+    return name;
+}
+
+MyString checkBottom(const char** arr, int height, int width, int i, int j){
+    MyString name = "";
+    if(i+1 < height && arr[i+1][j] != '.' && arr[i+1][j] != '#'){
+        if(j> 0 && (arr[i+1][j-1] == '.' || arr[i+1][j-1] == '#')){
+            if(j<width && MyString::isLetter(arr[i+1][j+1])) return "";
+            while(j < width && arr[i+1][j] != '#' && arr[i+1][j] != '.'){
+                name += arr[i+1][j];
+                j++;
+            }
+        }
+        else if(j==0){
+            if(j<width && MyString::isLetter(arr[i+1][j+1])) return "";
+            while(j < width && arr[i+1][j] != '#' && arr[i+1][j] != '.'){
+                name += arr[i+1][j];
+                j++;
+            }
+        }
+        else{
+            if(j<width && MyString::isLetter(arr[i+1][j+1])) return "";
+            while(arr[i+1][j] != '#' && arr[i+1][j] != '.'){
+                name += arr[i+1][j];
+                j--;
+            }
+            name.reverse();
+        }
+    }
+    return name;
+}
+
+MyString checkRightBottomCorner(const char ** arr, int height, int width, int i, int j){
+    MyString name = "";
+    if(arr[i+1][j+1] != '.' && arr[i+1][j+1] != '#'){
+        if(!(i-1 >= 0 || j+1 < width)) return "";
+        if(arr[i+1][j] == '.' || arr[i+1][j] == '#'){
+            while(arr[i+1][j+1] != '#' && arr[i+1][j+1] != '.' && arr[i+1][j+1] != '*'){
+                name += arr[i+1][j+1];
+                j++;
+            }
+        }
+        else{
+            while(arr[i+1][j+1] != '#' && arr[i+1][j+1] != '.' && arr[i+1][j+1] != '*'){
+                name += arr[i+1][j+1];
+                j--;
+            }
+            name.reverse();
+        }
+    }
+    return name;
+}
+
+//MyString checkLeftBottomCorner(const char** arr, int height, int width, int i, int j){
+//    MyString name = "";
+//    if(arr[i+1][j-1] != '.' && arr[i+1][j-1] != '#'){
+//        if(!(i-1 >= 0 || j-1 >= 0)) return "";
+//        while(arr[i+1][j-1] != '#' && arr[i+1][j-1] != '.' && arr[i+1][j-1] != '*'){
+//            name += arr[i+1][j-1];
+//            j--;
+//        }
+//        name.reverse();
+//    }
+//}
+
+MyString findCityName(const char** arr, int height, int width, int i, int j){
+    MyString name ="";
+
+    name = checkTop(arr,height,width,i,j);
+    //bottom
+    name = checkBottom(arr,height,width,i,j);
+
+    //top
 
     //right
-    else if(j+1 < width  && arr[i][j+1] != '.' && arr[i][j+1] != '#'){
+    if(j+1 < width  && arr[i][j+1] != '.' && arr[i][j+1] != '#'){
         while(j+1 < width && arr[i][j+1] != '#' && arr[i][j+1] != '.' && arr[i][j+1] != '*'){
             name += arr[i][j+1];
             j++;
@@ -72,15 +124,10 @@ MyString findCityName(const char** arr, int height, int width, int i, int j){
 
     //TODO: sprawdzic czy nie ma bledu w warunkach, wychodzenie poza tablice
     //right bottom corner
-    else if(arr[i+1][j+1] != '.' && arr[i+1][j+1] != '#'){
-        while(arr[i+1][j+1] != '#' && arr[i+1][j+1] != '.' && arr[i+1][j+1] != '*'){
-            name += arr[i+1][j+1];
-            j++;
-        }
-    }
+    name = checkRightBottomCorner(arr,height,width,i,j);
 
     //left bottom corner
-    else if(arr[i+1][j-1] != '.' && arr[i+1][j-1] != '#'){
+    if(arr[i+1][j-1] != '.' && arr[i+1][j-1] != '#'){
         while(arr[i+1][j-1] != '#' && arr[i+1][j-1] != '.' && arr[i+1][j-1] != '*'){
             name += arr[i+1][j-1];
             j--;
@@ -89,7 +136,7 @@ MyString findCityName(const char** arr, int height, int width, int i, int j){
     }
 
     //right top corner
-    else if(arr[i-1][j+1] != '.' && arr[i-1][j+1] != '#'){
+    if(arr[i-1][j+1] != '.' && arr[i-1][j+1] != '#'){
         while(arr[i-1][j+1] != '#' && arr[i-1][j+1] != '.' && arr[i-1][j+1] != '*'){
             name += arr[i-1][j+1];
             j++;
