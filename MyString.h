@@ -34,7 +34,7 @@ public:
     bool operator==(const char* text) const {return stringCompare(text);}
     bool operator!=(const char* text) const {return !(stringCompare(text));}
     bool operator==(const MyString value) const{return stringCompare(value);}
-    char operator[](int index);
+    char operator[](int index) const;
     MyString& operator+=(const MyString& other);
     MyString& operator+=(char c);
 

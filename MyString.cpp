@@ -104,7 +104,7 @@ bool MyString::stringCompare(const char* text) const{
 }
 
 
-char MyString::operator[](int index)
+char MyString::operator[](int index) const
 {
     return str[index];
 }

@@ -10,6 +10,7 @@
 #include "MyVector.h"
 #include "MyString.h"
 
+#include <math.h>
 
 class Edge{
 public:
@@ -148,14 +149,23 @@ public:
     }
 };
 
+class Pair {
+public:
+    unsigned int hash_value;
+    int index;
+};
+
 
 class AdjacencyList {
 private:
     MyVector <Vertex> vertices;
+    MyVector <MyVector<Pair>> hash_table{32};
 public:
     // Add a vertex to the list
     void addVertex(const Vertex& v) {
         vertices.pushBack(v);
+        unsigned int hash_value = hash_string(v.name);
+        hash_table[hash_value % hash_table.getSize()].pushBack(Pair{hash_value, vertices.getSize() - 1});
     }
 
     // Add an edge to the list
@@ -166,15 +176,26 @@ public:
         }
     }
 
-    // Get the index of the vertex with the given name
     int indexOfVertex(const MyString& name) {
-        for (int i = 0; i < vertices.getSize(); i++) {
-            if (vertices[i].name == name) {
-                return i;
+        unsigned int hash_value = hash_string(name);
+        MyVector<Pair> &temp = hash_table[hash_value % hash_table.getSize()];
+        for (int i = 0; i < temp.getSize(); i++) {
+            if (temp[i].hash_value == hash_value) {
+                return temp[i].index;
             }
         }
-        return -1; // not found
+        return -1;
     }
+
+//    // Get the index of the vertex with the given name
+//    int indexOfVertex(const MyString& name) {
+//        for (int i = 0; i < vertices.getSize(); i++) {
+//            if (vertices[i].name == name) {
+//                return i;
+//            }
+//        }
+//        return -1; // not found
+//    }
 
     // Print the adjacency list
     void printList() {
@@ -184,6 +205,14 @@ public:
         }
     }
 
+    static unsigned int hash_string(const MyString& str) {
+        unsigned int hash_value = 0;
+        int size = str.length();
+        for(int i = 0; i < size; i++)  {
+            hash_value = (hash_value * 31 + static_cast<unsigned int>(str[i])) % static_cast<unsigned int>(pow(2, 32));
+        }
+        return hash_value;
+    }
 };
 
 

@@ -9,14 +9,12 @@ MyString checkTop(const char** arr, int height, int width, int i, int j){
 
     if(i-1 >= 0 && arr[i-1][j] != '.' && arr[i-1][j] != '#'){
         if(j> 0 && arr[i-1][j-1] == '.' || arr[i-1][j-1] == '#'){
-            if(j<width && MyString::isLetter(arr[i-1][j+1])) return "";
                 while(j < width &&arr[i-1][j] != '#' && arr[i-1][j] != '.'){
                     name += arr[i-1][j];
                     j++;
                 }
         }
         else if(j==0){
-            if(j<width && MyString::isLetter(arr[i-1][j+1])) return "";
             while(j < width &&arr[i-1][j] != '#' && arr[i-1][j] != '.'){
                 name += arr[i-1][j];
                 j++;
@@ -38,14 +36,12 @@ MyString checkBottom(const char** arr, int height, int width, int i, int j){
     MyString name = "";
     if(i+1 < height && arr[i+1][j] != '.' && arr[i+1][j] != '#'){
         if(j> 0 && (arr[i+1][j-1] == '.' || arr[i+1][j-1] == '#')){
-            if(j<width && MyString::isLetter(arr[i+1][j+1])) return "";
             while(j < width && arr[i+1][j] != '#' && arr[i+1][j] != '.'){
                 name += arr[i+1][j];
                 j++;
             }
         }
         else if(j==0){
-            if(j<width && MyString::isLetter(arr[i+1][j+1])) return "";
             while(j < width && arr[i+1][j] != '#' && arr[i+1][j] != '.'){
                 name += arr[i+1][j];
                 j++;
@@ -65,8 +61,7 @@ MyString checkBottom(const char** arr, int height, int width, int i, int j){
 
 MyString checkRightBottomCorner(const char ** arr, int height, int width, int i, int j){
     MyString name = "";
-    if(arr[i+1][j+1] != '.' && arr[i+1][j+1] != '#'){
-        if(!(i-1 >= 0 || j+1 < width)) return "";
+    if((i+1 < height&&j+1 < width) &&arr[i+1][j+1] != '.' && arr[i+1][j+1] != '#'){
         if(arr[i+1][j] == '.' || arr[i+1][j] == '#'){
             while(arr[i+1][j+1] != '#' && arr[i+1][j+1] != '.' && arr[i+1][j+1] != '*'){
                 name += arr[i+1][j+1];
@@ -84,73 +79,110 @@ MyString checkRightBottomCorner(const char ** arr, int height, int width, int i,
     return name;
 }
 
-//MyString checkLeftBottomCorner(const char** arr, int height, int width, int i, int j){
-//    MyString name = "";
-//    if(arr[i+1][j-1] != '.' && arr[i+1][j-1] != '#'){
-//        if(!(i-1 >= 0 || j-1 >= 0)) return "";
-//        while(arr[i+1][j-1] != '#' && arr[i+1][j-1] != '.' && arr[i+1][j-1] != '*'){
-//            name += arr[i+1][j-1];
-//            j--;
-//        }
-//        name.reverse();
-//    }
-//}
+MyString checkLeftBottom(const char** arr, int height, int width, int i, int j){
+    MyString name = "";
+    if((i+1 < height&&j-1 >= 0) &&arr[i+1][j-1] != '.' && arr[i+1][j-1] != '#'){
+        if(arr[i+1][j] == '.' || arr[i+1][j] == '#'){
+            while(arr[i+1][j-1] != '#' && arr[i+1][j-1] != '.' && arr[i+1][j-1] != '*'){
+                name += arr[i+1][j-1];
+                j--;
+            }
+            name.reverse();
+        }
+        else{
+            if(j<width && MyString::isLetter(arr[i+1][j+1])) return "";
+            while(arr[i+1][j-1] != '#' && arr[i+1][j-1] != '.' && arr[i+1][j-1] != '*'){
+                name += arr[i+1][j-1];
+                j++;
+            }
+        }
+    }
+    return name;
+}
+
+MyString checkRightTopCorner(const char** arr, int height, int width, int i, int j){
+    MyString name = "";
+    if((i-1 >= 0&&j+1 < width) && arr[i-1][j+1] != '.' && arr[i-1][j+1] != '#'){
+        if(arr[i-1][j] == '.' || arr[i-1][j] == '#'){
+            while(arr[i-1][j+1] != '#' && arr[i-1][j+1] != '.' && arr[i-1][j+1] != '*'){
+                name += arr[i-1][j+1];
+                j++;
+            }
+        }
+        else{
+            if(j<width && MyString::isLetter(arr[i-1][j+2])) return "";
+            while(arr[i-1][j+1] != '#' && arr[i-1][j+1] != '.' && arr[i-1][j+1] != '*'){
+                name += arr[i-1][j+1];
+                j--;
+            }
+            name.reverse();
+        }
+    }
+    return name;
+}
+
+MyString checkLeftTopCorner(const char** arr, int height, int width, int i, int j){
+    MyString name = "";
+    if((i-1 >= 0 && j-1 < width) && arr[i-1][j-1] != '.' && arr[i-1][j-1] != '#'){
+        if(arr[i-1][j] == '.' || arr[i-1][j] == '#'){
+            while(arr[i-1][j-1] != '#' && arr[i-1][j-1] != '.' && arr[i-1][j-1] != '*'){
+                name += arr[i-1][j-1];
+                j--;
+            }
+            name.reverse();
+        }
+        else{
+            while(arr[i-1][j-1] != '#' && arr[i-1][j-1] != '.' && arr[i-1][j-1] != '*'){
+                name += arr[i-1][j-1];
+                j++;
+            }
+        }
+    }
+    return name;
+}
+
 
 MyString findCityName(const char** arr, int height, int width, int i, int j){
     MyString name ="";
 
-    name = checkTop(arr,height,width,i,j);
-    //bottom
-    name = checkBottom(arr,height,width,i,j);
-
     //top
+    if(name == "") name = checkTop(arr,height,width,i,j);
+    //bottom
+    if(name == "")name = checkBottom(arr,height,width,i,j);
+
 
     //right
-    if(j+1 < width  && arr[i][j+1] != '.' && arr[i][j+1] != '#'){
-        while(j+1 < width && arr[i][j+1] != '#' && arr[i][j+1] != '.' && arr[i][j+1] != '*'){
-            name += arr[i][j+1];
-            j++;
+    if(name == ""){
+        if(j+1 < width  && arr[i][j+1] != '.' && arr[i][j+1] != '#'){
+            while(j+1 < width && arr[i][j+1] != '#' && arr[i][j+1] != '.' && arr[i][j+1] != '*'){
+                name += arr[i][j+1];
+                j++;
+            }
         }
     }
 
     //left
-    else if((j-1 >= 0|| j==0) && arr[i][j-1] != '.' && arr[i][j-1] != '#'){
-        while(arr[i][j-1] != '#' && arr[i][j-1] != '.' && arr[i][j-1] != '*'){
-            name += arr[i][j-1];
-            j--;
+    if(name == ""){
+        if((j-1 >= 0) && arr[i][j-1] != '.' && arr[i][j-1] != '#'){
+            while(arr[i][j-1] != '#' && arr[i][j-1] != '.' && arr[i][j-1] != '*'){
+                name += arr[i][j-1];
+                j--;
+            }
+            name.reverse();
         }
-        name.reverse();
     }
 
-    //TODO: sprawdzic czy nie ma bledu w warunkach, wychodzenie poza tablice
     //right bottom corner
-    name = checkRightBottomCorner(arr,height,width,i,j);
+    if(name == "")name = checkRightBottomCorner(arr,height,width,i,j);
 
     //left bottom corner
-    if(arr[i+1][j-1] != '.' && arr[i+1][j-1] != '#'){
-        while(arr[i+1][j-1] != '#' && arr[i+1][j-1] != '.' && arr[i+1][j-1] != '*'){
-            name += arr[i+1][j-1];
-            j--;
-        }
-        name.reverse();
-    }
+    if(name == "")name = checkLeftBottom(arr,height,width,i,j);
 
     //right top corner
-    if(arr[i-1][j+1] != '.' && arr[i-1][j+1] != '#'){
-        while(arr[i-1][j+1] != '#' && arr[i-1][j+1] != '.' && arr[i-1][j+1] != '*'){
-            name += arr[i-1][j+1];
-            j++;
-        }
-    }
+    if(name == "")name = checkRightTopCorner(arr,height,width,i,j);
 
     //left top corner
-    else if(arr[i-1][j-1] != '.' && arr[i-1][j-1] != '#'){
-        while(arr[i-1][j-1] != '#' && arr[i-1][j-1] != '.' && arr[i-1][j-1] != '*'){
-            name += arr[i-1][j-1];
-            j--;
-        }
-        name.reverse();
-    }
+    if(name == "")name = checkLeftTopCorner(arr,height,width,i,j);
     return name;
 }
 
@@ -171,7 +203,7 @@ void parseArray(const char** arr, int height, int width) {
 int main() {
     int height, width;
     char c;
-    std::cin >> height >> width;
+    std::cin >> width >> height;
 
     char** board = new char*[height];
 
