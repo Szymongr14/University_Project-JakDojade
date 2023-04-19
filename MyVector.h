@@ -29,6 +29,7 @@ public:
     bool valueExist(T value);
     int indexOfValue(T value);
     void clear();
+    int getCapacity() const {return capacity;}
 
 
     T& operator[](int index);

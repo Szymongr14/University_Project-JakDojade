@@ -254,8 +254,8 @@ int main() {
     AdjacencyList adjacencyList;
     adjacencyList.addVertex(vertex2);
     adjacencyList.addEdge("GDansk", "ostroda", 30);
+    adjacencyList.addVertex(vertex2);
     adjacencyList.printList();
-
 
     // zwolnienie zaalokowanej pamięci
     for (int i = 0; i < height; i++) {

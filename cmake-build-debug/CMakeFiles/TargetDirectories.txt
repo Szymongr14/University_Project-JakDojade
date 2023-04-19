@@ -1,3 +1,0 @@
-C:/Users/szymo/CLionProjects/JakDojade/cmake-build-debug/CMakeFiles/JakDoajde.dir
-C:/Users/szymo/CLionProjects/JakDojade/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/szymo/CLionProjects/JakDojade/cmake-build-debug/CMakeFiles/rebuild_cache.dir

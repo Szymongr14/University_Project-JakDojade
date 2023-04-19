@@ -159,13 +159,13 @@ public:
 class AdjacencyList {
 private:
     MyVector <Vertex> vertices;
-    MyVector <MyVector<Pair>> hash_table{32};
+    MyVector <MyVector<Pair>> hash_table{999};
 public:
     // Add a vertex to the list
     void addVertex(const Vertex& v) {
         vertices.pushBack(v);
         unsigned int hash_value = hash_string(v.name);
-        hash_table[hash_value % hash_table.getSize()].pushBack(Pair{hash_value, vertices.getSize() - 1});
+        hash_table[hash_value % hash_table.getCapacity()].pushBack(Pair{hash_value, vertices.getSize() - 1});
     }
 
     // Add an edge to the list
@@ -178,7 +178,7 @@ public:
 
     int indexOfVertex(const MyString& name) {
         unsigned int hash_value = hash_string(name);
-        MyVector<Pair> &temp = hash_table[hash_value % hash_table.getSize()];
+        MyVector<Pair> &temp = hash_table[hash_value % hash_table.getCapacity()];
         for (int i = 0; i < temp.getSize(); i++) {
             if (temp[i].hash_value == hash_value) {
                 return temp[i].index;
@@ -209,7 +209,8 @@ public:
         unsigned int hash_value = 0;
         int size = str.length();
         for(int i = 0; i < size; i++)  {
-            hash_value = (hash_value * 31 + static_cast<unsigned int>(str[i])) % static_cast<unsigned int>(pow(2, 32));
+            unsigned int temp = (int)str[i] % (int)(pow(2, 32));
+            hash_value = hash_value * 31 + temp;
         }
         return hash_value;
     }
