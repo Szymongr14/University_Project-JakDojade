@@ -47,6 +47,13 @@ MyString checkBottom(const char** arr, int height, int width, int i, int j){
                 j++;
             }
         }
+        else if(j==width-1){
+            while(j >= 0 && arr[i+1][j] != '#' && arr[i+1][j] != '.'){
+                name += arr[i+1][j];
+                j--;
+            }
+            name.reverse();
+        }
         else{
             if(j<width && MyString::isLetter(arr[i+1][j+1])) return "";
             while(arr[i+1][j] != '#' && arr[i+1][j] != '.'){
@@ -132,7 +139,7 @@ MyString checkLeftTopCorner(const char** arr, int height, int width, int i, int 
             name.reverse();
         }
         else{
-            while(arr[i-1][j-1] != '#' && arr[i-1][j-1] != '.' && arr[i-1][j-1] != '*'){
+            while(arr[i-1][j-1] != '#' && arr[i-1][j-1] != '.' && arr[i-1][j-1] != '*' && j!=width+1){
                 name += arr[i-1][j-1];
                 j++;
             }

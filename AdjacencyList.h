@@ -197,7 +197,7 @@ public:
 //        return -1; // not found
 //    }
 
-    // Print the adjacency list
+
     void printList() {
         for(int i = 0; i < vertices.getSize(); i++) {
             std::cout << vertices[i].name << ": ";
