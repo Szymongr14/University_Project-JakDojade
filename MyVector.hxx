@@ -29,7 +29,7 @@ void MyVector<T>::pushBack(const T& element) {
 }
 
 template <typename T>
-T& MyVector<T>::operator[](int index) {
+T& MyVector<T>::operator[](int index) const{
     if (index < 0 || index >= capacity) {
         //throw std::out_of_range("Index out of range");
     }

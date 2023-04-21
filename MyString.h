@@ -1,4 +1,5 @@
 #include <iostream>
+#include "MyVector.h"
 #pragma once
 class MyString
 {
@@ -50,6 +51,19 @@ public:
     static bool isLetter(char c) {
         return isalpha(c) != 0;
     }
+
+    static MyString fromCharVector(const MyVector <char>& charVec) {
+        MyString result;
+        int size = charVec.getSize();
+        result.str = new char[size + 1];
+        for (std::size_t i = 0; i < size; ++i) {
+            result.str[i] = charVec[i];
+        }
+        result.str[size] = '\0';
+        return result;
+    }
+
+
 
 };
 

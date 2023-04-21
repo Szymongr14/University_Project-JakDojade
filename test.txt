@@ -19,3 +19,6 @@
 .OPOLE..#.*.......#.
 ........#.KRAKOW..#.
 ........###########.
+2
+GDANSK SZCZECIN 100
+WARSZAWA GDANSK 2

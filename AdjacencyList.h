@@ -20,7 +20,7 @@ public:
     Edge *prev;
 
     Edge(MyString name, int weight):name{std::move(name)}, weight{weight}, next{nullptr}, prev{nullptr}{}
-    ~Edge() = default;
+    //~Edge() = default;
     MyString getName() const {return name;}
 };
 
@@ -44,50 +44,25 @@ public:
             tail = newNode;
         }
     }
-    void remove(const Edge& value){
+
+    Edge * returnSpecifiedNode(int index){
         Edge *temp = head;
-        Edge *prev = nullptr;
-        if(head == nullptr){
-            return;
-        }
-        if(head->name == value.name){
-            head = head->next;
-            delete temp;
-            return;
-        }
-        while(temp != nullptr && !(temp->name == value.name)){
-            prev = temp;
+        for(int i=0; i<index; i++){
             temp = temp->next;
         }
-        if(temp == nullptr){
-            return;
-        }
-        prev->next = temp->next;
-        delete temp;
+        return temp;
     }
-    void removeGivenIndex(int i){
+
+    int numberOfEdges(){
         Edge *temp = head;
-        Edge *prev = nullptr;
-        if(head == nullptr){
-            return;
-        }
-        if(i == 0){
-            head = head->next;
-            delete temp;
-            return;
-        }
-        int index = 0;
-        while(temp != nullptr && index != i){
-            prev = temp;
+        int counter = 0;
+        while(temp != nullptr){
+            counter++;
             temp = temp->next;
-            index++;
         }
-        if(temp == nullptr){
-            return;
-        }
-        prev->next = temp->next;
-        delete temp;
+        return counter;
     }
+
     bool valueExist(const Edge& value){
         Edge *temp = head;
         while(temp != nullptr){
@@ -98,7 +73,51 @@ public:
         }
         return false;
     }
-    int indexOfVertex(const MyString& value){
+
+    bool valueExist(const MyString& value){
+        Edge *temp = head;
+        while(temp != nullptr){
+            if(temp->name == value){
+                return true;
+            }
+            temp = temp->next;
+        }
+        return false;
+    }
+
+    void removeGivenIndex(int index){
+        Edge *temp = head;
+        Edge *prev = nullptr;
+        if(index < 0 || index >= numberOfEdges()){
+            return;
+        }
+        if(index == 0){
+            head = head->next;
+            if (head != nullptr) {
+                head->prev = nullptr;
+            }
+            if (head == nullptr) {
+                tail = nullptr;
+            }
+            delete temp;
+            return;
+        }
+        for(int i=0; i<index; i++){
+            prev = temp;
+            temp = temp->next;
+        }
+        prev->next = temp->next;
+        if (temp->next != nullptr) {
+            temp->next->prev = prev;
+        }
+        if (temp->next == nullptr) {
+            tail = prev;
+        }
+        delete temp;
+    }
+
+
+    int indexOfEdge(const MyString& value){
         Edge *temp = head;
         int index = 0;
         while(temp != nullptr){
@@ -135,10 +154,8 @@ public:
         :name{""}{
     }
 
-    ~Vertex() = default;
 
     MyString getName() const {return name;}
-    LinkedList getEdges() const {return edges;}
 
     void addEdge(const Edge& element){
         edges.addNode(element);
@@ -168,11 +185,35 @@ public:
         hash_table[hash_value % hash_table.getCapacity()].pushBack(Pair{hash_value, vertices.getSize() - 1});
     }
 
+    void addVertex(const MyString& name) {
+        Vertex v{name, LinkedList()};
+        vertices.pushBack(v);
+        unsigned int hash_value = hash_string(name);
+        hash_table[hash_value % hash_table.getCapacity()].pushBack(Pair{hash_value, vertices.getSize() - 1});
+    }
+
     // Add an edge to the list
     void addEdge(const MyString& u, const MyString& v, int weight) {
         int index = indexOfVertex(u);
         if (index >= 0) {
             vertices[index].addEdge(Edge(v, weight));
+        }
+    }
+
+    void addFlight(const MyString& u, const MyString& v, int weight) {
+        int index = indexOfVertex(u);
+
+
+        if (index >= 0) {
+            if(vertices[index].edges.valueExist(v)){
+                int index2 = vertices[index].edges.indexOfEdge(v);
+                if(vertices[index].edges.returnSpecifiedNode(index2)->weight > weight){
+                    vertices[index].edges.removeGivenIndex(index2);
+                    this->addEdge(u, v, weight);
+                }
+            }
+            //this->addEdge(u, v, weight);
+
         }
     }
 

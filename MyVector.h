@@ -32,7 +32,7 @@ public:
     int getCapacity() const {return capacity;}
 
 
-    T& operator[](int index);
+    T& operator[](int index) const;
     MyVector& operator=(const MyVector& other);
     MyVector& operator=(MyVector&& other) noexcept;
 
