@@ -2,8 +2,9 @@
 #include "MyVector.hxx"
 #include "MyString.h"
 #include "AdjacencyList.h"
-#include "MyQueue.h"
+//#include "MyQueue.h"
 #include <time.h>
+#include "MyPriorityQueue.h"
 
 bool isInBoard(int i, int j, int height, int width){
     return i >= 0 && i < height && j >= 0 && j < width;
@@ -201,10 +202,10 @@ MyString findCityName(const char** arr, int height, int width, int i, int j){
 
 
 void findNeighbours(char** arr, int height, int width, int i, int j, const MyString& cityName, AdjacencyList& adjList){
-    MyQueue queue;
+    MyPriorityQueue queue;
     MyString nieghbourName = "";
     adjList.addVertex(cityName);
-    Field start(i,j,0);
+    Field start(i,j,0,cityName);
     queue.push(start);
     clock_t startTime = clock(); // start pomiaru czasu
     while(!queue.isEmpty()){
@@ -213,29 +214,31 @@ void findNeighbours(char** arr, int height, int width, int i, int j, const MyStr
         j = first.y;
         if(arr[i][j] == '*' && first.distance != 0){
             nieghbourName = findCityName((const char**) arr,height,width,i,j);
-            adjList.addEdge(cityName,nieghbourName,first.distance);
-            queue.pop();
+            adjList.addVertex(nieghbourName);
+            adjList.addEdge(first.city,nieghbourName,first.distance);
+            adjList.addEdge(nieghbourName,first.city,first.distance);
             arr[i][j] = ' ';
-            continue;
+            first.city = nieghbourName;
+            first.distance = 0;
         }
         arr[i][j] = ' ';
         if(isInBoard(i+1,j,height,width) && (arr[i+1][j] == '*' || arr[i+1][j] == '#')){
-            Field next(i+1,j,first.distance+1);
+            Field next(i+1,j,first.distance+1,first.city);
             queue.push(next);
         }
 
         if(isInBoard(i,j+1,height,width) && (arr[i][j+1] == '*' || arr[i][j+1] == '#')){
-            Field next(i,j+1,first.distance+1);
+            Field next(i,j+1,first.distance+1,first.city);
             queue.push(next);
         }
 
         if(isInBoard(i,j-1,height,width) && (arr[i][j-1] == '*' || arr[i][j-1] == '#')){
-            Field next(i,j-1,first.distance+1);
+            Field next(i,j-1,first.distance+1,first.city);
             queue.push(next);
         }
 
         if(isInBoard(i-1,j,height,width) && (arr[i-1][j] == '*' || arr[i-1][j] == '#')){
-            Field next(i-1,j,first.distance+1);
+            Field next(i-1,j,first.distance+1,first.city);
             queue.push(next);
         }
 
@@ -243,7 +246,7 @@ void findNeighbours(char** arr, int height, int width, int i, int j, const MyStr
     }
     clock_t endTime = clock(); // koniec pomiaru czasu
     double time = (double)(endTime - startTime) / CLOCKS_PER_SEC;
-    //std::cout << "czas while: " << time << std::endl;
+    std::cout << "czas while: " << time << std::endl;
 }
 
 AdjacencyList parseArray(const char** arr, int height, int width) {
@@ -271,13 +274,17 @@ AdjacencyList parseArray(const char** arr, int height, int width) {
                         delete[] arrCopy[k];
                     }
                     delete[] arrCopy;
+                    return adjList;
+                    clock_t endTime = clock(); // koniec pomiaru czasu
+                    double time_taken = double(endTime - startTime) / double(CLOCKS_PER_SEC);
+                    std::cout << "Time taken by program is : " << std::fixed << time_taken<<std::endl;
                 }
             }
         }
     }
-    clock_t endTime = clock(); // koniec pomiaru czasu
-    double time_taken = double(endTime - startTime) / double(CLOCKS_PER_SEC);
-    //std::cout << "Time taken by program is : " << std::fixed << time_taken<<std::endl;
+//    clock_t endTime = clock(); // koniec pomiaru czasu
+//    double time_taken = double(endTime - startTime) / double(CLOCKS_PER_SEC);
+//    std::cout << "Time taken by program is : " << std::fixed << time_taken<<std::endl;
     return adjList;
 }
 
@@ -345,7 +352,7 @@ int main() {
         //std::cout<<startCity<<" "<<endCity<<" "<<distanceStr<<std::endl;
         adjList.addFlight(startCity,endCity,MyString::stringToInt(distanceStr));
     }
-    //adjList.printList();
+    adjList.printList();
 
     std::cin>>queries;
     getchar();
@@ -404,7 +411,7 @@ int main() {
     endTime1 = clock(); // koniec pomiaru czasu
     time_taken1 = double(endTime1 - startTime1) / double(CLOCKS_PER_SEC); // obliczenie czasu trwania
 
-    //std::cout << "Compilation time: " << time_taken1 << " s" << std::endl;
+    std::cout << "Compilation time: " << time_taken1 << " s" << std::endl;
     std::cin.get()  ;
     return 0;
 }

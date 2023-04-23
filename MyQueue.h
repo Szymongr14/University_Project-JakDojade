@@ -1,19 +1,22 @@
+//#include <utility>
+
 //
 // Created by szymo on 21.04.2023.
 //
 
 #ifndef JAKDOJADE_MYQUEUE_H
 #define JAKDOJADE_MYQUEUE_H
-
+#include "MyString.h"
 class Field{
 public:
     int x;
     int y;
     int distance;
+    MyString city;
     Field *next;
     Field *prev;
 
-    Field(int x, int y, int distance):x{x},y{y},distance{distance}, next{nullptr}, prev{nullptr}{}
+    Field(int x, int y, int distance, MyString city):x{x},y{y},distance{distance}, next{nullptr}, prev{nullptr}, city{std::move(city)}{}
     ~Field() = default;
 
 //    Field& operator=(const Field& other) {
@@ -38,7 +41,7 @@ public:
     ~MyQueue() = default;
 
     void push(const Field& element){
-        Field *newNode = new Field{element.x, element.y, element.distance};
+        Field *newNode = new Field{element.x, element.y, element.distance, element.city};
         if(head == nullptr){
             head = newNode;
             tail = newNode;
