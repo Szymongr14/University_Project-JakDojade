@@ -16,16 +16,16 @@ public:
     Field(int x, int y, int distance):x{x},y{y},distance{distance}, next{nullptr}, prev{nullptr}{}
     ~Field() = default;
 
-    Field& operator=(const Field& other) {
-        if (this != &other) {
-            x = other.x;
-            y = other.y;
-            distance = other.distance;
-            next = other.next;
-            prev = other.prev;
-        }
-        return *this;
-    }
+//    Field& operator=(const Field& other) {
+//        if (this != &other) {
+//            x = other.x;
+//            y = other.y;
+//            distance = other.distance;
+//            next = other.next;
+//            prev = other.prev;
+//        }
+//        return *this;
+//    }
 };
 
 
@@ -70,7 +70,9 @@ public:
 
     bool isEmpty() const {return head == nullptr;}
 
-    Field* front() const {return head;}
+    Field& front() const {
+        return *head;
+    }
     Field* back() const {return tail;}
 };
 

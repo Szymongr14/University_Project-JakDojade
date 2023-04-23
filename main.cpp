@@ -3,6 +3,7 @@
 #include "MyString.h"
 #include "AdjacencyList.h"
 #include "MyQueue.h"
+#include <time.h>
 
 bool isInBoard(int i, int j, int height, int width){
     return i >= 0 && i < height && j >= 0 && j < width;
@@ -79,6 +80,7 @@ MyString checkRightBottomCorner(const char ** arr, int height, int width, int i,
             }
         }
         else{
+            if(isInBoard(i+1,j+2,height,width) && isInBoard(i+1,j-1,height,width)&& MyString::isLetter(arr[i+1][j+2]) && MyString::isLetter(arr[i+1][j-1])) return "";
             while(arr[i+1][j+1] != '#' && arr[i+1][j+1] != '.' && arr[i+1][j+1] != '*' && arr[i+1][j+1] != ' '){
                 name += arr[i+1][j+1];
                 j--;
@@ -93,6 +95,7 @@ MyString checkLeftBottom(const char** arr, int height, int width, int i, int j){
     MyString name = "";
     if((i+1 < height&&j-1 >= 0) &&arr[i+1][j-1] != '.' && arr[i+1][j-1] != '#' && arr[i+1][j-1] != ' '){
         if(arr[i+1][j] == '.' || arr[i+1][j] == '#' || arr[i+1][j] == ' '){
+
             while(arr[i+1][j-1] != '#' && arr[i+1][j-1] != '.' && arr[i+1][j-1] != '*' && arr[i+1][j-1] != ' '){
                 name += arr[i+1][j-1];
                 j--;
@@ -100,7 +103,7 @@ MyString checkLeftBottom(const char** arr, int height, int width, int i, int j){
             name.reverse();
         }
         else{
-            if(j<width && MyString::isLetter(arr[i+1][j+1])) return "";
+            if(isInBoard(i+1,j+1,height,width)&& isInBoard(i+1,j-2,height,width) && MyString::isLetter(arr[i+1][j-2]) && MyString::isLetter(arr[i+1][j+1])) return "";
             while(arr[i+1][j-1] != '#' && arr[i+1][j-1] != '.' && arr[i+1][j-1] != '*' && arr[i+1][j-1] != ' '){
                 name += arr[i+1][j-1];
                 j++;
@@ -203,8 +206,9 @@ void findNeighbours(char** arr, int height, int width, int i, int j, const MyStr
     adjList.addVertex(cityName);
     Field start(i,j,0);
     queue.push(start);
+    clock_t startTime = clock(); // start pomiaru czasu
     while(!queue.isEmpty()){
-        Field first = *queue.front();
+        Field &first = queue.front();
         i = first.x;
         j = first.y;
         if(arr[i][j] == '*' && first.distance != 0){
@@ -237,9 +241,13 @@ void findNeighbours(char** arr, int height, int width, int i, int j, const MyStr
 
         queue.pop();
     }
+    clock_t endTime = clock(); // koniec pomiaru czasu
+    double time = (double)(endTime - startTime) / CLOCKS_PER_SEC;
+    //std::cout << "czas while: " << time << std::endl;
 }
 
 AdjacencyList parseArray(const char** arr, int height, int width) {
+    clock_t startTime = clock(); // start pomiaru czasu
     AdjacencyList adjList;
     MyString cityName = "";
     for (int i = 0; i < height; i++) {
@@ -255,6 +263,7 @@ AdjacencyList parseArray(const char** arr, int height, int width) {
                         }
                     }
                     cityName = findCityName(arr, height, width, i, j);
+                    //std::cout<<cityName<<std::endl;
                     findNeighbours(arrCopy, height, width, i, j, cityName, adjList);
 
                     //deleting copy of the array
@@ -266,12 +275,20 @@ AdjacencyList parseArray(const char** arr, int height, int width) {
             }
         }
     }
+    clock_t endTime = clock(); // koniec pomiaru czasu
+    double time_taken = double(endTime - startTime) / double(CLOCKS_PER_SEC);
+    //std::cout << "Time taken by program is : " << std::fixed << time_taken<<std::endl;
     return adjList;
 }
 
 
 int main() {
-    int height, width, queries,flights;
+    clock_t startTime1, endTime1;
+    double time_taken1;
+    startTime1 = clock(); // start pomiaru czasu
+
+
+    int height=0, width=0, queries=0,flights=0;
     AdjacencyList adjList;
     char c;
     std::cin >> width >> height;
@@ -293,13 +310,13 @@ int main() {
     }
 
 
-    std::cout << "Array elements: " << std::endl;
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            std::cout << board[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
+//    std::cout << "Array elements: " << std::endl;
+//    for (int i = 0; i < height; i++) {
+//        for (int j = 0; j < width; j++) {
+//            std::cout << board[i][j] << " ";
+//        }
+//        std::cout << std::endl;
+//    }
 
     adjList = parseArray((const char**)board, height, width);
 
@@ -328,7 +345,31 @@ int main() {
         //std::cout<<startCity<<" "<<endCity<<" "<<distanceStr<<std::endl;
         adjList.addFlight(startCity,endCity,MyString::stringToInt(distanceStr));
     }
-    adjList.printList();
+    //adjList.printList();
+
+    std::cin>>queries;
+    getchar();
+    for(int i = 0; i < queries; i++){
+        MyVector<char> start, end, mode;
+        int order=0;
+        std::cin >> line;
+        for(int j = 0; j < line.length(); j++){
+            if(line[j]==' '){
+                order++;
+                continue;
+            }
+            if(order==0) start.pushBack(line[j]);
+            if(order==1) end.pushBack(line[j]);
+            if(order==2) mode.pushBack(line[j]);
+        }
+        start.pushBack('\0');
+        end.pushBack('\0');
+        mode.pushBack('\0');
+        MyString startCity(MyString::fromCharVector(start));
+        MyString endCity(MyString::fromCharVector(end));
+        MyString modeStr(MyString::fromCharVector(mode));
+        adjList.findShortestPath(startCity,endCity,MyString::stringToInt(modeStr));
+    }
 
 
 
@@ -359,5 +400,11 @@ int main() {
         delete[] board[i];
     }
     delete[] board;
+
+    endTime1 = clock(); // koniec pomiaru czasu
+    time_taken1 = double(endTime1 - startTime1) / double(CLOCKS_PER_SEC); // obliczenie czasu trwania
+
+    //std::cout << "Compilation time: " << time_taken1 << " s" << std::endl;
+    std::cin.get()  ;
     return 0;
 }

@@ -45,6 +45,8 @@ public:
         }
     }
 
+    Edge * getHead() {return head;}
+
     Edge * returnSpecifiedNode(int index){
         Edge *temp = head;
         for(int i=0; i<index; i++){
@@ -155,6 +157,7 @@ public:
     }
 
 
+
     MyString getName() const {return name;}
 
     void addEdge(const Edge& element){
@@ -170,26 +173,32 @@ class Pair {
 public:
     unsigned int hash_value;
     int index;
+    MyString name;
+};
+
+struct EdgePair {
+    MyString name;
+    int weight;
 };
 
 
 class AdjacencyList {
 private:
     MyVector <Vertex> vertices;
-    MyVector <MyVector<Pair>> hash_table{999};
+    MyVector <MyVector<Pair>> hash_table{2000};
 public:
     // Add a vertex to the list
     void addVertex(const Vertex& v) {
         vertices.pushBack(v);
         unsigned int hash_value = hash_string(v.name);
-        hash_table[hash_value % hash_table.getCapacity()].pushBack(Pair{hash_value, vertices.getSize() - 1});
+        hash_table[hash_value % hash_table.getCapacity()].pushBack(Pair{hash_value, vertices.getSize() - 1, v.name});
     }
 
     void addVertex(const MyString& name) {
         Vertex v{name, LinkedList()};
         vertices.pushBack(v);
         unsigned int hash_value = hash_string(name);
-        hash_table[hash_value % hash_table.getCapacity()].pushBack(Pair{hash_value, vertices.getSize() - 1});
+        hash_table[hash_value % hash_table.getCapacity()].pushBack(Pair{hash_value, vertices.getSize() - 1, name});
     }
 
     // Add an edge to the list
@@ -205,14 +214,14 @@ public:
 
 
         if (index >= 0) {
-            if(vertices[index].edges.valueExist(v)){
-                int index2 = vertices[index].edges.indexOfEdge(v);
-                if(vertices[index].edges.returnSpecifiedNode(index2)->weight > weight){
-                    vertices[index].edges.removeGivenIndex(index2);
-                    this->addEdge(u, v, weight);
-                }
-            }
-            //this->addEdge(u, v, weight);
+//            if(vertices[index].edges.valueExist(v)){
+//                int index2 = vertices[index].edges.indexOfEdge(v);
+//                if(vertices[index].edges.returnSpecifiedNode(index2)->weight > weight){
+//                    vertices[index].edges.removeGivenIndex(index2);
+//                    this->addEdge(u, v, weight);
+//                }
+//            }
+            this->addEdge(u, v, weight);
 
         }
     }
@@ -221,7 +230,7 @@ public:
         unsigned int hash_value = hash_string(name);
         MyVector<Pair> &temp = hash_table[hash_value % hash_table.getCapacity()];
         for (int i = 0; i < temp.getSize(); i++) {
-            if (temp[i].hash_value == hash_value) {
+            if (temp[i].name == name) {
                 return temp[i].index;
             }
         }
@@ -254,6 +263,56 @@ public:
             hash_value = hash_value * 31 + temp;
         }
         return hash_value;
+    }
+
+
+    void findShortestPath(const MyString& start, const MyString& end, int mode){
+        int start_index = indexOfVertex(start);
+        int end_index = indexOfVertex(end);
+        if(start_index == -1 || end_index == -1){
+            //std::cout << "No such vertex" << std::endl;
+            return;
+        }
+        MyVector<EdgePair> set;
+        set.pushBack(EdgePair{start, 0});
+        MyVector<int> distances(vertices.getSize(), INT_MAX);
+        MyVector<int> previous(vertices.getSize(), -1);
+        distances[start_index] = 0;
+
+        while(set.getSize()!=0){
+            EdgePair temp = set[0];
+            set.removeGivenIndex(0);
+            int index = indexOfVertex(temp.name);
+            for(int i=0; i<vertices[index].edges.numberOfEdges(); i++){
+                Edge *temp2 = vertices[index].edges.returnSpecifiedNode(i);
+                int index2 = indexOfVertex(temp2->name);
+                if(distances[index2] > distances[index] + temp2->weight){
+                    distances[index2] = distances[index] + temp2->weight;
+                    previous[index2] = index;
+                    EdgePair temp3{temp2->name, distances[index2]};
+                    set.pushBack(temp3);
+                }
+            }
+        }
+        if(mode == 0){
+            //std::cout<<"Shortest path from "<<start<<" to "<<end<<" is: "<<distances[end_index]<<std::endl;
+            std::cout<<distances[end_index]<<std::endl;
+            return;
+        }
+        else{
+            MyVector <MyString> path(100);
+            int index = end_index;
+            while(index != start_index){
+                if(index!=end_index)path.pushBack(vertices[index].name);
+                index = previous[index];
+            }
+            //std::cout<<"Shortest path from "<<start<<" to "<<end<<" is: "<<distances[end_index]<<std::endl;
+            std::cout<<distances[end_index]<<" ";
+            for(int i=path.getSize()-1; i>=0; i--){
+                std::cout<<path[i]<<" ";
+            }
+            std::cout<<std::endl;
+        }
     }
 };
 
