@@ -9,6 +9,7 @@
 
 #include "MyVector.h"
 #include "MyString.h"
+#include "MyPriorityQueue.h"
 
 #include <math.h>
 
@@ -176,10 +177,10 @@ public:
     MyString name;
 };
 
-struct EdgePair {
-    MyString name;
-    int weight;
-};
+//struct EdgePair {
+//    MyString name;
+//    int weight;
+//};
 
 
 class AdjacencyList {
@@ -273,15 +274,14 @@ public:
             //std::cout << "No such vertex" << std::endl;
             return;
         }
-        MyVector<EdgePair> set;
-        set.pushBack(EdgePair{start, 0});
+        MyPriorityQueue set;
+        set.push(EdgePair{start, 0});
         MyVector<int> distances(vertices.getSize(), INT_MAX);
         MyVector<int> previous(vertices.getSize(), -1);
         distances[start_index] = 0;
-
         while(set.getSize()!=0){
-            EdgePair temp = set[0];
-            set.removeGivenIndex(0);
+            EdgePair temp = set.top();
+            set.pop();
             int index = indexOfVertex(temp.name);
             for(int i=0; i<vertices[index].edges.numberOfEdges(); i++){
                 Edge *temp2 = vertices[index].edges.returnSpecifiedNode(i);
@@ -290,7 +290,7 @@ public:
                     distances[index2] = distances[index] + temp2->weight;
                     previous[index2] = index;
                     EdgePair temp3{temp2->name, distances[index2]};
-                    set.pushBack(temp3);
+                    set.push(temp3);
                 }
             }
         }
@@ -300,7 +300,7 @@ public:
             return;
         }
         else{
-            MyVector <MyString> path(100);
+            MyVector <MyString> path(200);
             int index = end_index;
             while(index != start_index){
                 if(index!=end_index)path.pushBack(vertices[index].name);

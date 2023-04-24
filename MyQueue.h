@@ -12,24 +12,17 @@ public:
     int x;
     int y;
     int distance;
-    MyString city;
+    //MyString city;
     Field *next;
     Field *prev;
 
-    Field(int x, int y, int distance, MyString city):x{x},y{y},distance{distance}, next{nullptr}, prev{nullptr}, city{std::move(city)}{}
+    //Field(int x, int y, int distance, MyString city):x{x},y{y},distance{distance}, next{nullptr}, prev{nullptr}, city{std::move(city)}{}
+    Field(int x, int y, int distance):x{x},y{y},distance{distance}, next{nullptr}, prev{nullptr}{}
     ~Field() = default;
 
-//    Field& operator=(const Field& other) {
-//        if (this != &other) {
-//            x = other.x;
-//            y = other.y;
-//            distance = other.distance;
-//            next = other.next;
-//            prev = other.prev;
-//        }
-//        return *this;
-//    }
 };
+
+
 
 
 class MyQueue{
@@ -41,7 +34,7 @@ public:
     ~MyQueue() = default;
 
     void push(const Field& element){
-        Field *newNode = new Field{element.x, element.y, element.distance, element.city};
+        Field *newNode = new Field{element.x, element.y, element.distance};
         if(head == nullptr){
             head = newNode;
             tail = newNode;

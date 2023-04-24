@@ -31,6 +31,11 @@ public:
     int indexOfValue(T value);
     void clear();
     int getCapacity() const {return capacity;}
+    void popBack() {
+        if (size > 0) {
+            size--;
+        }
+    }
 
 
     T& operator[](int index) const;
