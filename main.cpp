@@ -4,276 +4,71 @@
 #include "AdjacencyList.h"
 #include "MyQueue.h"
 #include <time.h>
-//#include "MyPriorityQueue.h"
+#include "Board.h"
 
-bool isInBoard(int i, int j, int height, int width){
-    return i >= 0 && i < height && j >= 0 && j < width;
-}
-MyString checkTop(const char** arr, int height, int width, int i, int j){
-    MyString name = "";
-
-    if(i-1 >= 0 && arr[i-1][j] != '.' && arr[i-1][j] != '#' && arr[i-1][j]!= ' '){
-        if(j> 0 && arr[i-1][j-1] == '.' || arr[i-1][j-1] == '#' || arr[i-1][j-1] == ' '){
-                while(j < width &&arr[i-1][j] != '#' && arr[i-1][j] != '.' && arr[i-1][j] != ' '){
-                    name += arr[i-1][j];
-                    j++;
-                }
-        }
-        else if(j==0){
-            while(j < width &&arr[i-1][j] != '#' && arr[i-1][j] != '.' && arr[i-1][j] != ' '){
-                name += arr[i-1][j];
-                j++;
-            }
-        }
-        else{
-            if(j<width && MyString::isLetter(arr[i-1][j+1])) return "";
-            while(arr[i-1][j] != '#' && arr[i-1][j] != '.' && arr[i-1][j] != ' '){
-                name += arr[i-1][j];
-                j--;
-            }
-            name.reverse();
-        }
-    }
-    return name;
-}
-
-MyString checkBottom(const char** arr, int height, int width, int i, int j){
-    MyString name = "";
-    if(i+1 < height && arr[i+1][j] != '.' && arr[i+1][j] != '#' && arr[i+1][j] != ' '){
-        if(j> 0 && (arr[i+1][j-1] == '.' || arr[i+1][j-1] == '#' || arr[i+1][j-1] == ' ')){
-            while(j < width && arr[i+1][j] != '#' && arr[i+1][j] != '.' && arr[i+1][j] != ' '){
-                name += arr[i+1][j];
-                j++;
-            }
-        }
-        else if(j==0){
-            while(j < width && arr[i+1][j] != '#' && arr[i+1][j] != '.' && arr[i+1][j] != ' '){
-                name += arr[i+1][j];
-                j++;
-            }
-        }
-        else if(j==width-1){
-            while(j >= 0 && arr[i+1][j] != '#' && arr[i+1][j] != '.' && arr[i+1][j] != ' '){
-                name += arr[i+1][j];
-                j--;
-            }
-            name.reverse();
-        }
-        else{
-            if(j<width && MyString::isLetter(arr[i+1][j+1])) return "";
-            while(arr[i+1][j] != '#' && arr[i+1][j] != '.' && arr[i+1][j] != ' '){
-                name += arr[i+1][j];
-                j--;
-            }
-            name.reverse();
-        }
-    }
-    return name;
-}
-
-MyString checkRightBottomCorner(const char ** arr, int height, int width, int i, int j){
-    MyString name = "";
-    if((i+1 < height&&j+1 < width) &&arr[i+1][j+1] != '.' && arr[i+1][j+1] != '#' && arr[i+1][j+1] != ' '){
-        if(arr[i+1][j] == '.' || arr[i+1][j] == '#' || arr[i+1][j] == ' '){
-            while(arr[i+1][j+1] != '#' && arr[i+1][j+1] != '.' && arr[i+1][j+1] != '*' && arr[i+1][j+1] != ' '){
-                name += arr[i+1][j+1];
-                j++;
-            }
-        }
-        else{
-            if(isInBoard(i+1,j+2,height,width) && isInBoard(i+1,j-1,height,width)&& MyString::isLetter(arr[i+1][j+2]) && MyString::isLetter(arr[i+1][j-1])) return "";
-            while(arr[i+1][j+1] != '#' && arr[i+1][j+1] != '.' && arr[i+1][j+1] != '*' && arr[i+1][j+1] != ' '){
-                name += arr[i+1][j+1];
-                j--;
-            }
-            name.reverse();
-        }
-    }
-    return name;
-}
-
-MyString checkLeftBottom(const char** arr, int height, int width, int i, int j){
-    MyString name = "";
-    if((i+1 < height&&j-1 >= 0) &&arr[i+1][j-1] != '.' && arr[i+1][j-1] != '#' && arr[i+1][j-1] != ' '){
-        if(arr[i+1][j] == '.' || arr[i+1][j] == '#' || arr[i+1][j] == ' '){
-
-            while(arr[i+1][j-1] != '#' && arr[i+1][j-1] != '.' && arr[i+1][j-1] != '*' && arr[i+1][j-1] != ' '){
-                name += arr[i+1][j-1];
-                j--;
-            }
-            name.reverse();
-        }
-        else{
-            if(isInBoard(i+1,j+1,height,width)&& isInBoard(i+1,j-2,height,width) && MyString::isLetter(arr[i+1][j-2]) && MyString::isLetter(arr[i+1][j+1])) return "";
-            while(arr[i+1][j-1] != '#' && arr[i+1][j-1] != '.' && arr[i+1][j-1] != '*' && arr[i+1][j-1] != ' '){
-                name += arr[i+1][j-1];
-                j++;
-            }
-        }
-    }
-    return name;
-}
-
-MyString checkRightTopCorner(const char** arr, int height, int width, int i, int j){
-    MyString name = "";
-    if((i-1 >= 0&&j+1 < width) && arr[i-1][j+1] != '.' && arr[i-1][j+1] != '#' && arr[i-1][j+1] != '*'){
-        if(arr[i-1][j] == '.' || arr[i-1][j] == '#' || arr[i-1][j] == '*' || arr[i-1][j] == ' '){
-            while(arr[i-1][j+1] != '#' && arr[i-1][j+1] != '.' && arr[i-1][j+1] != '*' && arr[i-1][j+1] != ' '){
-                name += arr[i-1][j+1];
-                j++;
-            }
-        }
-        else{
-            if(j<width && MyString::isLetter(arr[i-1][j+2])) return "";
-            while(arr[i-1][j+1] != '#' && arr[i-1][j+1] != '.' && arr[i-1][j+1] != '*' && arr[i-1][j+1] != ' '){
-                name += arr[i-1][j+1];
-                j--;
-            }
-            name.reverse();
-        }
-    }
-    return name;
-}
-
-MyString checkLeftTopCorner(const char** arr, int height, int width, int i, int j){
-    MyString name = "";
-    if((i-1 >= 0 && j-1 < width) && arr[i-1][j-1] != '.' && arr[i-1][j-1] != '#' && arr[i-1][j-1] != ' '){
-        if(arr[i-1][j] == '.' || arr[i-1][j] == '#' || arr[i-1][j] == ' '){
-            while(arr[i-1][j-1] != '#' && arr[i-1][j-1] != '.' && arr[i-1][j-1] != '*' && arr[i-1][j-1] != ' '){
-                name += arr[i-1][j-1];
-                j--;
-            }
-            name.reverse();
-        }
-        else{
-            while(arr[i-1][j-1] != '#' && arr[i-1][j-1] != '.' && arr[i-1][j-1] != '*' && j!=width+1 && arr[i-1][j-1] != ' '){
-                name += arr[i-1][j-1];
-                j++;
-            }
-        }
-    }
-    return name;
-}
-
-
-MyString findCityName(const char** arr, int height, int width, int i, int j){
-    MyString name ="";
-    //top
-    if(name == "") name = checkTop(arr,height,width,i,j);
-
-    //bottom
-    if(name == "")name = checkBottom(arr,height,width,i,j);
-
-    //right
-    if(name == ""){
-        if(j+1 < width  && arr[i][j+1] != '.' && arr[i][j+1] != '#' && arr[i][j+1] != ' '){
-            while(j+1 < width && arr[i][j+1] != '#' && arr[i][j+1] != '.' && arr[i][j+1] != '*' && arr[i][j+1] != ' '){
-                name += arr[i][j+1];
-                j++;
-            }
-        }
-    }
-
-    //left
-    if(name == ""){
-        if((j-1 >= 0) && arr[i][j-1] != '.' && arr[i][j-1] != '#' && arr[i][j-1] != ' '){
-            while(arr[i][j-1] != '#' && arr[i][j-1] != '.' && arr[i][j-1] != '*' && arr[i][j-1] != ' '){
-                name += arr[i][j-1];
-                j--;
-            }
-            name.reverse();
-        }
-    }
-    //right bottom corner
-    if(name == "")name = checkRightBottomCorner(arr,height,width,i,j);
-
-    //left bottom corner
-    if(name == "")name = checkLeftBottom(arr,height,width,i,j);
-
-    //right top corner
-    if(name == "")name = checkRightTopCorner(arr,height,width,i,j);
-
-    //left top corner
-    if(name == "")name = checkLeftTopCorner(arr,height,width,i,j);
-    return name;
-}
-
-
-void findNeighbours(const char** arr, int height, int width, int i, int j, const MyString& cityName, AdjacencyList& adjList){
+void findNeighbours(const Board& board,int i, int j, const MyString& cityName, AdjacencyList& adjList){
     MyQueue queue;
     MyString neighbourName = "";
     adjList.addVertex(cityName);
-    bool** visited = new bool*[height];
-    for(int k=0; k<height; k++){
-        visited[k] = new bool[width];
-        for(int l=0; l<width; l++){
+    bool** visited = new bool*[board.height];
+    for(int k=0; k<board.height; k++){
+        visited[k] = new bool[board.width];
+        for(int l=0; l<board.width; l++){
             visited[k][l] = false;
         }
     }
 
     Field start(i,j,0);
     queue.push(start);
-    clock_t startTime = clock(); // start pomiaru czasu
     while(!queue.isEmpty()){
         Field &first = queue.front();
         i = first.x;
         j = first.y;
-        if(arr[i][j] == '*' && first.distance != 0){
-            neighbourName = findCityName((const char**) arr,height,width,i,j);
+        if(board.getIndex(i,j) == '*' && first.distance != 0){
+            neighbourName = board.findCityName(i,j);
             adjList.addEdge(cityName,neighbourName,first.distance);
             queue.pop();
             continue;
         }
-        if(isInBoard(i+1,j,height,width) && (arr[i+1][j] == '*' || arr[i+1][j] == '#') && !visited[i+1][j]){
+        if(board.isInBoard(i+1,j) && (board.getIndex(i+1,j) == '*' || (board.getIndex(i+1,j) == '#')) && !visited[i+1][j]){
             Field next(i+1,j,first.distance+1);
             queue.push(next);
             visited[i+1][j] = true;
         }
 
-        if(isInBoard(i,j+1,height,width) && (arr[i][j+1] == '*' || arr[i][j+1] == '#') && !visited[i][j+1]){
+        if(board.isInBoard(i,j+1) && ((board.getIndex(i,j+1) == '*' || board.getIndex(i,j+1) == '#')) && !visited[i][j+1]){
             Field next(i,j+1,first.distance+1);
             queue.push(next);
             visited[i][j+1] = true;
         }
 
-        if(isInBoard(i,j-1,height,width) && (arr[i][j-1] == '*' || arr[i][j-1] == '#') && !visited[i][j-1]){
+        if(board.isInBoard(i,j-1) && ((board.getIndex(i,j-1) == '*' || board.getIndex(i,j-1) == '#')) && !visited[i][j-1]){
             Field next(i,j-1,first.distance+1);
             queue.push(next);
             visited[i][j-1] = true;
         }
 
-        if(isInBoard(i-1,j,height,width) && (arr[i-1][j] == '*' || arr[i-1][j] == '#') && !visited[i-1][j]){
+        if(board.isInBoard(i-1,j) && (board.getIndex(i-1,j) == '*' || board.getIndex(i-1,j) == '#') && !visited[i-1][j]){
             Field next(i-1,j,first.distance+1);
             queue.push(next);
             visited[i-1][j] = true;
         }
-
         queue.pop();
     }
 
-    for(int k=0;k<height;k++){
+    for(int k=0;k<board.height;k++){
         delete[] visited[k];
     }
     delete[] visited;
-
-    clock_t endTime = clock(); // koniec pomiaru czasu
-    double time = (double)(endTime - startTime) / CLOCKS_PER_SEC;
-    //std::cout << "czas while: " << time << std::endl;
 }
 
-AdjacencyList parseArray(const char** arr, int height, int width) {
+AdjacencyList parseArray(const Board& board) {
     clock_t startTime = clock(); // start pomiaru czasu
     AdjacencyList adjList;
     MyString cityName = "";
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            if (arr[i][j] != '.' && !MyString::isLetter(arr[i][j])) {
-                if(arr[i][j] == '*'){
-                    cityName = findCityName(arr, height, width, i, j);
-                    findNeighbours(arr, height, width, i, j, cityName, adjList);
-                }
-            }
-        }
+    for(int i=0; i<board.cities.getSize(); i++) {
+        cityName = board.findCityName(board.cities[i].x, board.cities[i].y);
+        findNeighbours(board,board.cities[i].x, board.cities[i].y, cityName, adjList);
     }
     return adjList;
 }
@@ -284,27 +79,18 @@ int main() {
     double time_taken1;
     startTime1 = clock(); // start pomiaru czasu
 
-
     int height=0, width=0, queries=0,flights=0;
     AdjacencyList adjList;
     char c;
     std::cin >> width >> height;
+    Board board{height,width};
 
-    char** board = new char*[height];
-
-    for(int i = 0; i < height; i++){
-        board[i] = new char[width];
-    }
-
-    for(int i = 0; i < height; i++){
-        for(int j = 0; j < width; j++){
-            c = getchar();
-            while (c == '\n') {
-                c = getchar();
-            }
-            board[i][j] = c;
-        }
-    }
+    clock_t startTime2=clock(), endTime2;
+    double time_taken2;
+    board.laodBoard();
+    endTime2 = clock(); // koniec pomiaru czasu
+    time_taken2 = (double)(endTime2 - startTime2) / CLOCKS_PER_SEC;
+    std::cout << "czas wczytywania: " << time_taken2 << std::endl;
 
 
 //    std::cout << "Array elements: " << std::endl;
@@ -315,7 +101,7 @@ int main() {
 //        std::cout << std::endl;
 //    }
 
-    adjList = parseArray((const char**)board, height, width);
+    adjList = parseArray(board);
 
     std::cin>>flights;
     getchar();
@@ -345,7 +131,6 @@ int main() {
 
     //adjList.printList();
 
-
     std::cin>>queries;
     getchar();
     for(int i = 0; i < queries; i++){
@@ -369,12 +154,6 @@ int main() {
         MyString modeStr(MyString::fromCharVector(mode));
         adjList.findShortestPath(startCity,endCity,MyString::stringToInt(modeStr));
     }
-
-    // zwolnienie zaalokowanej pamięci
-    for (int i = 0; i < height; i++) {
-        delete[] board[i];
-    }
-    delete[] board;
 
     endTime1 = clock(); // koniec pomiaru czasu
     time_taken1 = double(endTime1 - startTime1) / double(CLOCKS_PER_SEC); // obliczenie czasu trwania

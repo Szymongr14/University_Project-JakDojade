@@ -13,6 +13,7 @@
 
 #include <math.h>
 
+
 class Edge{
 public:
     MyString name;
@@ -21,137 +22,137 @@ public:
     Edge *prev;
 
     Edge(MyString name, int weight):name{std::move(name)}, weight{weight}, next{nullptr}, prev{nullptr}{}
+    Edge():name{""}, weight{0}, next{nullptr}, prev{nullptr}{}
     //~Edge() = default;
     MyString getName() const {return name;}
 };
 
-class LinkedList {
-private:
-    Edge *head;
-    Edge *tail;
-public:
-    LinkedList():head{nullptr}, tail{nullptr}{}
-    ~LinkedList() = default;
-
-    void addNode(const Edge& element){
-        Edge *newNode = new Edge{element.name, element.weight};
-        if(head == nullptr){
-            head = newNode;
-            tail = newNode;
-        }
-        else{
-            tail->next = newNode;
-            newNode->prev = tail;
-            tail = newNode;
-        }
-    }
-
-    Edge * getHead() {return head;}
-
-    Edge * returnSpecifiedNode(int index){
-        Edge *temp = head;
-        for(int i=0; i<index; i++){
-            temp = temp->next;
-        }
-        return temp;
-    }
-
-    int numberOfEdges(){
-        Edge *temp = head;
-        int counter = 0;
-        while(temp != nullptr){
-            counter++;
-            temp = temp->next;
-        }
-        return counter;
-    }
-
-    bool valueExist(const Edge& value){
-        Edge *temp = head;
-        while(temp != nullptr){
-            if(temp->name == value.name){
-                return true;
-            }
-            temp = temp->next;
-        }
-        return false;
-    }
-
-    bool valueExist(const MyString& value){
-        Edge *temp = head;
-        while(temp != nullptr){
-            if(temp->name == value){
-                return true;
-            }
-            temp = temp->next;
-        }
-        return false;
-    }
-
-    void removeGivenIndex(int index){
-        Edge *temp = head;
-        Edge *prev = nullptr;
-        if(index < 0 || index >= numberOfEdges()){
-            return;
-        }
-        if(index == 0){
-            head = head->next;
-            if (head != nullptr) {
-                head->prev = nullptr;
-            }
-            if (head == nullptr) {
-                tail = nullptr;
-            }
-            delete temp;
-            return;
-        }
-        for(int i=0; i<index; i++){
-            prev = temp;
-            temp = temp->next;
-        }
-        prev->next = temp->next;
-        if (temp->next != nullptr) {
-            temp->next->prev = prev;
-        }
-        if (temp->next == nullptr) {
-            tail = prev;
-        }
-        delete temp;
-    }
-
-
-    int indexOfEdge(const MyString& value){
-        Edge *temp = head;
-        int index = 0;
-        while(temp != nullptr){
-            if(temp->name == value){
-                return index;
-            }
-            temp = temp->next;
-            index++;
-        }
-        return -1;
-    }
-
-    void printList(){
-        Edge *temp = head;
-        while(temp != nullptr){
-            std::cout << temp->name<<"|" <<temp->weight<< ", ";
-            temp = temp->next;
-        }
-        std::cout << std::endl;
-    }
-};
+//class LinkedList {
+//private:
+//    Edge *head;
+//    Edge *tail;
+//public:
+//    LinkedList():head{nullptr}, tail{nullptr}{}
+//    ~LinkedList() = default;
+//
+//    void addNode(const Edge& element){
+//        Edge *newNode = new Edge{element.name, element.weight};
+//        if(head == nullptr){
+//            head = newNode;
+//            tail = newNode;
+//        }
+//        else{
+//            tail->next = newNode;
+//            newNode->prev = tail;
+//            tail = newNode;
+//        }
+//    }
+//
+//    Edge * getHead() {return head;}
+//
+//    Edge * returnSpecifiedNode(int index){
+//        Edge *temp = head;
+//        for(int i=0; i<index; i++){
+//            temp = temp->next;
+//        }
+//        return temp;
+//    }
+//
+//    int numberOfEdges(){
+//        Edge *temp = head;
+//        int counter = 0;
+//        while(temp != nullptr){
+//            counter++;
+//            temp = temp->next;
+//        }
+//        return counter;
+//    }
+//
+//    bool valueExist(const Edge& value){
+//        Edge *temp = head;
+//        while(temp != nullptr){
+//            if(temp->name == value.name){
+//                return true;
+//            }
+//            temp = temp->next;
+//        }
+//        return false;
+//    }
+//
+//    bool valueExist(const MyString& value){
+//        Edge *temp = head;
+//        while(temp != nullptr){
+//            if(temp->name == value){
+//                return true;
+//            }
+//            temp = temp->next;
+//        }
+//        return false;
+//    }
+//
+//    void removeGivenIndex(int index){
+//        Edge *temp = head;
+//        Edge *prev = nullptr;
+//        if(index < 0 || index >= numberOfEdges()){
+//            return;
+//        }
+//        if(index == 0){
+//            head = head->next;
+//            if (head != nullptr) {
+//                head->prev = nullptr;
+//            }
+//            if (head == nullptr) {
+//                tail = nullptr;
+//            }
+//            delete temp;
+//            return;
+//        }
+//        for(int i=0; i<index; i++){
+//            prev = temp;
+//            temp = temp->next;
+//        }
+//        prev->next = temp->next;
+//        if (temp->next != nullptr) {
+//            temp->next->prev = prev;
+//        }
+//        if (temp->next == nullptr) {
+//            tail = prev;
+//        }
+//        delete temp;
+//    }
+//
+//
+//    int indexOfEdge(const MyString& value){
+//        Edge *temp = head;
+//        int index = 0;
+//        while(temp != nullptr){
+//            if(temp->name == value){
+//                return index;
+//            }
+//            temp = temp->next;
+//            index++;
+//        }
+//        return -1;
+//    }
+//
+//    void printList(){
+//        Edge *temp = head;
+//        while(temp != nullptr){
+//            std::cout << temp->name<<"|" <<temp->weight<< ", ";
+//            temp = temp->next;
+//        }
+//        std::cout << std::endl;
+//    }
+//};
 
 
 class Vertex{
 public:
     MyString name;
-    LinkedList edges;
+    MyVector<Edge> edges{50};
 
-    Vertex(MyString name, LinkedList edges)
-        :name{std::move(name)}, edges{edges}{
-
+    Vertex(MyString name, MyVector<Edge> edges)
+        :name{std::move(name)}, edges{std::move(edges)}{
     }
     Vertex()
         :name{""}{
@@ -162,11 +163,14 @@ public:
     MyString getName() const {return name;}
 
     void addEdge(const Edge& element){
-        edges.addNode(element);
+        edges.pushBack(element);
     }
 
-    void printEdges(){
-        edges.printList();
+    void printEdges() const{
+        for(int i=0; i<edges.getSize(); i++){
+            std::cout << edges[i].name<<"|" <<edges[i].weight<< ", ";
+        }
+        std::cout << std::endl;
     }
 };
 
@@ -196,7 +200,7 @@ public:
     }
 
     void addVertex(const MyString& name) {
-        Vertex v{name, LinkedList()};
+        Vertex v{name, MyVector<Edge>{50}};
         vertices.pushBack(v);
         unsigned int hash_value = hash_string(name);
         hash_table[hash_value % hash_table.getCapacity()].pushBack(Pair{hash_value, vertices.getSize() - 1, name});
@@ -252,7 +256,7 @@ public:
     void printList() {
         for(int i = 0; i < vertices.getSize(); i++) {
             std::cout << vertices[i].name << ": ";
-            vertices[i].edges.printList();
+            vertices[i].printEdges();
         }
     }
 
@@ -283,13 +287,13 @@ public:
             EdgePair temp = set.top();
             set.pop();
             int index = indexOfVertex(temp.name);
-            for(int i=0; i<vertices[index].edges.numberOfEdges(); i++){
-                Edge *temp2 = vertices[index].edges.returnSpecifiedNode(i);
-                int index2 = indexOfVertex(temp2->name);
-                if(distances[index2] > distances[index] + temp2->weight){
-                    distances[index2] = distances[index] + temp2->weight;
+            for(int i=0; i<vertices[index].edges.getSize(); i++){
+                Edge temp2 = vertices[index].edges[i];
+                int index2 = indexOfVertex(temp2.name);
+                if(distances[index2] > distances[index] + temp2.weight){
+                    distances[index2] = distances[index] + temp2.weight;
                     previous[index2] = index;
-                    EdgePair temp3{temp2->name, distances[index2]};
+                    EdgePair temp3{temp2.name, distances[index2]};
                     set.push(temp3);
                 }
             }
