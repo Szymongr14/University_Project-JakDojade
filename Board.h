@@ -5,6 +5,7 @@
 #include "MyVector.h"
 #include "MyString.h"
 #include "AdjacencyList.h"
+#include <cstring>
 
 
 #ifndef INC_4_IN_BOARD_H
@@ -24,10 +25,13 @@ public:
     int size;
     int height;
     int width;
-    MyVector <Coordinates> cities;
+    MyVector <Coordinates> cities{200};
+    bool * visited;
 
     Board(int height, int width):height{height}, width{width}, size{height * width}{
         board = new char[size];
+        visited = new bool[size];
+        memset(visited,false,size);
     }
 
     void laodBoard(){
@@ -45,13 +49,26 @@ public:
         }
     }
 
+    void restoreVisited() const{
+        memset(visited,false,size);
+    }
+
+    bool isVisited(int i, int j) const{
+        return visited[i * width + j];
+    }
+
+    void setVisited(int i, int j) const{
+        visited[i * width + j] = true;
+    }
+
     char getIndex(int i, int j) const{
         int index = i * width + j;
         return board[index];
     }
 
     ~Board(){
-            delete [] board;
+        delete [] board;
+        delete [] visited;
     }
 
     bool isInBoard(int i, int j) const{
@@ -247,7 +264,6 @@ public:
         if(name == "")name = checkLeftTopCorner(i,j);
         return name;
     }
-
 };
 
 

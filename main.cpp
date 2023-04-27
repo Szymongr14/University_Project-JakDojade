@@ -6,66 +6,61 @@
 #include <time.h>
 #include "Board.h"
 
-void findNeighbours(const Board& board,int i, int j, const MyString& cityName, AdjacencyList& adjList){
+void findNeighbours(const Board& board,long int i, long int j, const MyString& cityName, AdjacencyList& adjList){
     MyQueue queue;
     MyString neighbourName = "";
+    bool needToRestoreVisited = false;
     adjList.addVertex(cityName);
-    bool** visited = new bool*[board.height];
-    for(int k=0; k<board.height; k++){
-        visited[k] = new bool[board.width];
-        for(int l=0; l<board.width; l++){
-            visited[k][l] = false;
-        }
-    }
 
     Field start(i,j,0);
     queue.push(start);
-    while(!queue.isEmpty()){
-        Field &first = queue.front();
+    while(!queue.empty()){
+        Field &first = queue.top();
         i = first.x;
         j = first.y;
-        if(board.getIndex(i,j) == '*' && first.distance != 0){
+        if(board.getIndex(i,j) == '*' && first.weight != 0){
             neighbourName = board.findCityName(i,j);
-            adjList.addEdge(cityName,neighbourName,first.distance);
+            adjList.addEdge(cityName,neighbourName,first.weight);
             queue.pop();
             continue;
         }
-        if(board.isInBoard(i+1,j) && (board.getIndex(i+1,j) == '*' || (board.getIndex(i+1,j) == '#')) && !visited[i+1][j]){
-            Field next(i+1,j,first.distance+1);
+        if(board.isInBoard(i+1,j) && (board.getIndex(i+1,j) == '*' || (board.getIndex(i+1,j) == '#')) && !board.isVisited(i+1,j)){
+            Field next(i+1,j,first.weight+1);
             queue.push(next);
-            visited[i+1][j] = true;
+            board.setVisited(i+1,j);
+            needToRestoreVisited = true;
         }
 
-        if(board.isInBoard(i,j+1) && ((board.getIndex(i,j+1) == '*' || board.getIndex(i,j+1) == '#')) && !visited[i][j+1]){
-            Field next(i,j+1,first.distance+1);
+        if(board.isInBoard(i,j+1) && ((board.getIndex(i,j+1) == '*' || board.getIndex(i,j+1) == '#')) && !board.isVisited(i,j+1)){
+            Field next(i,j+1,first.weight+1);
             queue.push(next);
-            visited[i][j+1] = true;
+            board.setVisited(i,j+1);
+            needToRestoreVisited = true;
         }
 
-        if(board.isInBoard(i,j-1) && ((board.getIndex(i,j-1) == '*' || board.getIndex(i,j-1) == '#')) && !visited[i][j-1]){
-            Field next(i,j-1,first.distance+1);
+        if(board.isInBoard(i,j-1) && ((board.getIndex(i,j-1) == '*' || board.getIndex(i,j-1) == '#')) && !board.isVisited(i,j-1)){
+            Field next(i,j-1,first.weight+1);
             queue.push(next);
-            visited[i][j-1] = true;
+            board.setVisited(i,j-1);
+            needToRestoreVisited = true;
         }
 
-        if(board.isInBoard(i-1,j) && (board.getIndex(i-1,j) == '*' || board.getIndex(i-1,j) == '#') && !visited[i-1][j]){
-            Field next(i-1,j,first.distance+1);
+        if(board.isInBoard(i-1,j) && (board.getIndex(i-1,j) == '*' || board.getIndex(i-1,j) == '#') && !board.isVisited(i-1,j)){
+            Field next(i-1,j,first.weight+1);
             queue.push(next);
-            visited[i-1][j] = true;
+            board.setVisited(i-1,j);
+            needToRestoreVisited = true;
         }
         queue.pop();
     }
-
-    for(int k=0;k<board.height;k++){
-        delete[] visited[k];
-    }
-    delete[] visited;
+    if(needToRestoreVisited) board.restoreVisited();
 }
 
-AdjacencyList parseArray(const Board& board) {
+AdjacencyList createGraph(const Board& board) {
     clock_t startTime = clock(); // start pomiaru czasu
     AdjacencyList adjList;
     MyString cityName = "";
+
     for(int i=0; i<board.cities.getSize(); i++) {
         cityName = board.findCityName(board.cities[i].x, board.cities[i].y);
         findNeighbours(board,board.cities[i].x, board.cities[i].y, cityName, adjList);
@@ -90,7 +85,7 @@ int main() {
     board.laodBoard();
     endTime2 = clock(); // koniec pomiaru czasu
     time_taken2 = (double)(endTime2 - startTime2) / CLOCKS_PER_SEC;
-    std::cout << "czas wczytywania: " << time_taken2 << std::endl;
+    //std::cout << "czas wczytywania: " << time_taken2 << std::endl;
 
 
 //    std::cout << "Array elements: " << std::endl;
@@ -101,8 +96,16 @@ int main() {
 //        std::cout << std::endl;
 //    }
 
-    adjList = parseArray(board);
+    clock_t startTime3=clock(), endTime3;
+    double time_taken3;
+    adjList = createGraph(board);
+    endTime3 = clock(); // koniec pomiaru czasu
+    time_taken3 = (double)(endTime3 - startTime3) / CLOCKS_PER_SEC;
+    //std::cout << "czas tworzenia grafu: " << time_taken3 << std::endl;
 
+
+    clock_t startTime4=clock(), endTime4;
+    double time_taken4;
     std::cin>>flights;
     getchar();
     MyString line;
@@ -128,9 +131,15 @@ int main() {
         //std::cout<<startCity<<" "<<endCity<<" "<<distanceStr<<std::endl;
         adjList.addFlight(startCity,endCity,MyString::stringToInt(distanceStr));
     }
+    endTime4 = clock(); // koniec pomiaru czasu
+    time_taken4 = (double)(endTime4 - startTime4) / CLOCKS_PER_SEC;
+    //std::cout << "czas wczytywania lotow: " << time_taken4 << std::endl;
 
     //adjList.printList();
 
+
+    clock_t startTime5=clock(), endTime5;
+    double time_taken5;
     std::cin>>queries;
     getchar();
     for(int i = 0; i < queries; i++){
@@ -154,10 +163,13 @@ int main() {
         MyString modeStr(MyString::fromCharVector(mode));
         adjList.findShortestPath(startCity,endCity,MyString::stringToInt(modeStr));
     }
+    endTime5 = clock(); // koniec pomiaru czasu
+    time_taken5 = (double)(endTime5 - startTime5) / CLOCKS_PER_SEC;
+    //std::cout << "czas disjktry: " << time_taken5 << std::endl;
 
     endTime1 = clock(); // koniec pomiaru czasu
     time_taken1 = double(endTime1 - startTime1) / double(CLOCKS_PER_SEC); // obliczenie czasu trwania
 
-    std::cout << "Compilation time: " << time_taken1 << " s" << std::endl;
+    //std::cout << "Compilation time: " << time_taken1 << " s" << std::endl;
     return 0;
 }

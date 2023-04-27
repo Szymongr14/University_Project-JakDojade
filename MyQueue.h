@@ -11,13 +11,13 @@ class Field{
 public:
     int x;
     int y;
-    int distance;
+    int weight;
     //MyString city;
     Field *next;
     Field *prev;
 
     //Field(int x, int y, int distance, MyString city):x{x},y{y},distance{distance}, next{nullptr}, prev{nullptr}, city{std::move(city)}{}
-    Field(int x, int y, int distance):x{x},y{y},distance{distance}, next{nullptr}, prev{nullptr}{}
+    Field(int x, int y, int distance):x{x},y{y},weight{distance}, next{nullptr}, prev{nullptr}{}
     ~Field() = default;
 
 };
@@ -34,7 +34,7 @@ public:
     ~MyQueue() = default;
 
     void push(const Field& element){
-        Field *newNode = new Field{element.x, element.y, element.distance};
+        Field *newNode = new Field{element.x, element.y, element.weight};
         if(head == nullptr){
             head = newNode;
             tail = newNode;
@@ -64,9 +64,9 @@ public:
 
 
 
-    bool isEmpty() const {return head == nullptr;}
+    bool empty() const {return head == nullptr;}
 
-    Field& front() const {
+    Field& top() const {
         return *head;
     }
     Field* back() const {return tail;}
