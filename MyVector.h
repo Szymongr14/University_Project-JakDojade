@@ -47,16 +47,6 @@ private:
     void resize();
 };
 
-template<typename T>
-MyVector<T>::MyVector(int initialCapacity, T value) {
-    arr = new T[initialCapacity];
-    capacity = initialCapacity;
-    size = initialCapacity;
-    for (int i = 0; i < initialCapacity; i++) {
-        arr[i] = value;
-    }
-
-}
 
 
 #endif //JAKDOAJDE_MYVECTOR_H

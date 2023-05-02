@@ -6,7 +6,7 @@
 #include <time.h>
 #include "Board.h"
 
-void findNeighbours(const Board& board,long int i, long int j, const MyString& cityName, AdjacencyList& adjList){
+void findNeighbours(const Board& board,int i,int j, const MyString& cityName, AdjacencyList& adjList){
     MyQueue queue;
     MyString neighbourName = "";
     bool needToRestoreVisited = false;
@@ -57,7 +57,6 @@ void findNeighbours(const Board& board,long int i, long int j, const MyString& c
 }
 
 AdjacencyList createGraph(const Board& board) {
-    clock_t startTime = clock(); // start pomiaru czasu
     AdjacencyList adjList;
     MyString cityName = "";
 
@@ -70,42 +69,17 @@ AdjacencyList createGraph(const Board& board) {
 
 
 int main() {
-    clock_t startTime1, endTime1;
-    double time_taken1;
-    startTime1 = clock(); // start pomiaru czasu
-
     int height=0, width=0, queries=0,flights=0;
     AdjacencyList adjList;
     char c;
+
     std::cin >> width >> height;
     Board board{height,width};
 
-    clock_t startTime2=clock(), endTime2;
-    double time_taken2;
     board.laodBoard();
-    endTime2 = clock(); // koniec pomiaru czasu
-    time_taken2 = (double)(endTime2 - startTime2) / CLOCKS_PER_SEC;
-    //std::cout << "czas wczytywania: " << time_taken2 << std::endl;
 
-
-//    std::cout << "Array elements: " << std::endl;
-//    for (int i = 0; i < height; i++) {
-//        for (int j = 0; j < width; j++) {
-//            std::cout << board[i][j] << " ";
-//        }
-//        std::cout << std::endl;
-//    }
-
-    clock_t startTime3=clock(), endTime3;
-    double time_taken3;
     adjList = createGraph(board);
-    endTime3 = clock(); // koniec pomiaru czasu
-    time_taken3 = (double)(endTime3 - startTime3) / CLOCKS_PER_SEC;
-    //std::cout << "czas tworzenia grafu: " << time_taken3 << std::endl;
 
-
-    clock_t startTime4=clock(), endTime4;
-    double time_taken4;
     std::cin>>flights;
     getchar();
     MyString line;
@@ -128,18 +102,10 @@ int main() {
         MyString startCity(MyString::fromCharVector(start));
         MyString endCity(MyString::fromCharVector(end));
         MyString distanceStr(MyString::fromCharVector(distance));
-        //std::cout<<startCity<<" "<<endCity<<" "<<distanceStr<<std::endl;
         adjList.addFlight(startCity,endCity,MyString::stringToInt(distanceStr));
     }
-    endTime4 = clock(); // koniec pomiaru czasu
-    time_taken4 = (double)(endTime4 - startTime4) / CLOCKS_PER_SEC;
-    //std::cout << "czas wczytywania lotow: " << time_taken4 << std::endl;
-
     //adjList.printList();
 
-
-    clock_t startTime5=clock(), endTime5;
-    double time_taken5;
     std::cin>>queries;
     getchar();
     for(int i = 0; i < queries; i++){
@@ -163,13 +129,5 @@ int main() {
         MyString modeStr(MyString::fromCharVector(mode));
         adjList.findShortestPath(startCity,endCity,MyString::stringToInt(modeStr));
     }
-    endTime5 = clock(); // koniec pomiaru czasu
-    time_taken5 = (double)(endTime5 - startTime5) / CLOCKS_PER_SEC;
-    //std::cout << "czas disjktry: " << time_taken5 << std::endl;
-
-    endTime1 = clock(); // koniec pomiaru czasu
-    time_taken1 = double(endTime1 - startTime1) / double(CLOCKS_PER_SEC); // obliczenie czasu trwania
-
-    //std::cout << "Compilation time: " << time_taken1 << " s" << std::endl;
     return 0;
 }

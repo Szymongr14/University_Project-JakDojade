@@ -2,10 +2,10 @@
 // Created by szymo on 26.04.2023.
 //
 #include <iostream>
+#include <cstring>
 #include "MyVector.h"
 #include "MyString.h"
 #include "AdjacencyList.h"
-#include <cstring>
 
 
 #ifndef INC_4_IN_BOARD_H

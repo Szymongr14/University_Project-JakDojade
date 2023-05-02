@@ -7,23 +7,20 @@
 #ifndef JAKDOJADE_MYQUEUE_H
 #define JAKDOJADE_MYQUEUE_H
 #include "MyString.h"
+
+
 class Field{
 public:
     int x;
     int y;
     int weight;
-    //MyString city;
     Field *next;
     Field *prev;
 
-    //Field(int x, int y, int distance, MyString city):x{x},y{y},distance{distance}, next{nullptr}, prev{nullptr}, city{std::move(city)}{}
     Field(int x, int y, int distance):x{x},y{y},weight{distance}, next{nullptr}, prev{nullptr}{}
     ~Field() = default;
 
 };
-
-
-
 
 class MyQueue{
 private:
@@ -63,12 +60,8 @@ public:
     }
 
 
-
     bool empty() const {return head == nullptr;}
-
-    Field& top() const {
-        return *head;
-    }
+    Field& top() const {return *head;}
     Field* back() const {return tail;}
 };
 

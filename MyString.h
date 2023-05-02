@@ -21,13 +21,25 @@ public:
     bool stringCompare(const MyString string) const;
     bool empty() const {return (str == nullptr);}
     void trim();
+    void reverse();
 
 
+    static bool isLetter(char c) {return isalpha(c) != 0;}
     char static* stringCopy(char* where, const char* from);
     char static* myGetLine();
     bool static isDigit(const MyString value_to_check);
     int static stringToInt(const MyString value);
     bool exist(char c) const;
+    static MyString fromCharVector(const MyVector <char>& charVec) {
+        MyString result;
+        int size = charVec.getSize();
+        result.str = new char[size + 1];
+        for (std::size_t i = 0; i < size; ++i) {
+            result.str[i] = charVec[i];
+        }
+        result.str[size] = '\0';
+        return result;
+    }
 
 
     MyString& operator=(const MyString& object);
@@ -39,29 +51,8 @@ public:
     MyString& operator+=(const MyString& other);
     MyString& operator+=(char c);
 
-    void reverse() {
-        int len = this->length();
-        for (int i = 0; i < len / 2; i++) {
-            char temp = str[i];
-            str[i] = str[len - i - 1];
-            str[len - i - 1] = temp;
-        }
-    }
 
-    static bool isLetter(char c) {
-        return isalpha(c) != 0;
-    }
 
-    static MyString fromCharVector(const MyVector <char>& charVec) {
-        MyString result;
-        int size = charVec.getSize();
-        result.str = new char[size + 1];
-        for (std::size_t i = 0; i < size; ++i) {
-            result.str[i] = charVec[i];
-        }
-        result.str[size] = '\0';
-        return result;
-    }
 
 
 

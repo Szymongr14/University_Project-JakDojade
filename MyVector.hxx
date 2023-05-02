@@ -20,6 +20,16 @@ MyVector<T>::MyVector(MyVector<T>&& other) noexcept : arr(other.arr), capacity(o
     other.size = 0;
 }
 
+template<typename T>
+MyVector<T>::MyVector(int initialCapacity, T value) {
+    arr = new T[initialCapacity];
+    capacity = initialCapacity;
+    size = initialCapacity;
+    for (int i = 0; i < initialCapacity; i++) {
+        arr[i] = value;
+    }
+}
+
 template <typename T>
 void MyVector<T>::pushBack(const T& element) {
     if (size >= capacity) {

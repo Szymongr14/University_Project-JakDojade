@@ -5,13 +5,9 @@
 #ifndef JAKDOAJDE_ADJACENCYLIST_H
 #define JAKDOAJDE_ADJACENCYLIST_H
 
-#include <utility>
-
 #include "MyVector.h"
 #include "MyString.h"
 #include "MyPriorityQueue.h"
-
-#include <math.h>
 
 
 class Edge{
@@ -34,7 +30,6 @@ public:
     Vertex()
         :name{""}{
     }
-
 
     void addEdge(const Edge& element){
         edges.pushBack(element);
@@ -60,7 +55,6 @@ private:
     MyVector <Vertex> vertices;
     MyVector <MyVector<Pair>> hash_table{272139};
 public:
-    // Add a vertex to the list
     void addVertex(const Vertex& v) {
         vertices.pushBack(v);
         unsigned int hash_value = hash_string(v.name);
@@ -74,7 +68,6 @@ public:
         hash_table[hash_value % hash_table.getCapacity()].pushBack(Pair{hash_value, vertices.getSize() - 1, name});
     }
 
-    // Add an edge to the list
     void addEdge(const MyString& u, const MyString& v, int weight) {
         int index = indexOfVertex(u);
         if (index >= 0) {
@@ -84,18 +77,8 @@ public:
 
     void addFlight(const MyString& u, const MyString& v, int weight) {
         int index = indexOfVertex(u);
-
-
         if (index >= 0) {
-//            if(vertices[index].edges.valueExist(v)){
-//                int index2 = vertices[index].edges.indexOfEdge(v);
-//                if(vertices[index].edges.returnSpecifiedNode(index2)->weight > weight){
-//                    vertices[index].edges.removeGivenIndex(index2);
-//                    this->addEdge(u, v, weight);
-//                }
-//            }
             this->addEdge(u, v, weight);
-
         }
     }
 
@@ -116,16 +99,6 @@ public:
             vertices[i].printEdges();
         }
     }
-
-//    static unsigned int hash_string(const MyString& str) {
-//        unsigned int hash_value = 0;
-//        int size = str.length();
-//        for(int i = 0; i < size; i++)  {
-//            unsigned int temp = (int)str[i] % (int)(pow(2, 32));
-//            hash_value = hash_value * 31 + temp;
-//        }
-//        return hash_value;
-//    }
 
     static unsigned int hash_string(const MyString& str) {
         const unsigned int FNV_offset_basis = 2166136261u;
@@ -169,7 +142,6 @@ public:
             }
         }
         if(mode == 0){
-            //std::cout<<"Shortest path from "<<start<<" to "<<end<<" is: "<<distances[end_index]<<std::endl;
             std::cout<<distances[end_index]<<std::endl;
             return;
         }
@@ -180,7 +152,6 @@ public:
                 if(index!=end_index)path.pushBack(vertices[index].name);
                 index = previous[index];
             }
-            //std::cout<<"Shortest path from "<<start<<" to "<<end<<" is: "<<distances[end_index]<<std::endl;
             std::cout<<distances[end_index]<<" ";
             for(int i=path.getSize()-1; i>=0; i--){
                 std::cout<<path[i]<<" ";

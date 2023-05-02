@@ -3,4 +3,4 @@ project(JakDoajde)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(JakDoajde main.cpp MyVector.hxx MyVector.h MyString.h MyString.cpp AdjacencyList.cpp AdjacencyList.h MyQueue.h MyPriorityQueue.h Board.cpp Board.h)
+add_executable(JakDoajde main.cpp MyVector.hxx MyVector.h MyString.h MyString.cpp AdjacencyList.h MyQueue.h MyPriorityQueue.h Board.h)

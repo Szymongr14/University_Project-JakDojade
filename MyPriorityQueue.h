@@ -27,7 +27,7 @@ public:
         int parentIndex = (childIndex - 1) / 2;
 
         while (childIndex > 0 && heap[parentIndex].weight > heap[childIndex].weight) {
-            std::swap(heap[childIndex], heap[parentIndex]);
+            swap(heap[childIndex], heap[parentIndex]);
             childIndex = parentIndex;
             parentIndex = (childIndex - 1) / 2;
         }
