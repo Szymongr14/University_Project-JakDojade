@@ -8,6 +8,7 @@
 #include "MyVector.h"
 #include "MyString.h"
 #include "MyPriorityQueue.h"
+#include <climits>
 
 
 class Edge{
